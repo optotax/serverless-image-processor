@@ -1,7 +1,8 @@
+import * as AWS from 'aws-sdk';
 import { getType } from 'mime';
-import { streamS3Object } from './S3Client';
-import { isSupportedInputMime, createPipe } from './pipes';
+import { createPipe, isSupportedInputMime } from './pipes';
 import { getTransformer } from './Sharp';
+import { getS3ClientConfig } from './Utils';
 
 export const handle = (
   event: any,
@@ -15,14 +16,24 @@ export const handle = (
   console.log(`Checking params`);
   const key = event.pathParameters.proxy as string;
   const bucket = process.env.BUCKET!;
-  const inputStream = streamS3Object(key, bucket, cb);
-  const inputMime = getType(key);
-
-  console.log(`Checking mime`);
-  inputStream.once('readable', async () => {
+  const s3 = new AWS.S3(getS3ClientConfig());
+  const params = {
+    Bucket: bucket,
+    Key: key
+  };
+  s3.headObject(params, function (err, data) {
+    if (err) {
+      console.error(`Exception while transforming ${key}`);
+      console.error(err);
+      cb(err, { statusCode: 500 });
+    }
+    let inputMime = data.ContentType || null;
     if (!isSupportedInputMime(inputMime)) {
-      console.error(`Unsupported image ${key}`);
-      return cb(null, { statusCode: 500 });
+      inputMime = getType(key);
+      if (!isSupportedInputMime(inputMime)) {
+        console.error(`Unsupported image ${key} for mime ${inputMime}`);
+        return cb(null, { statusCode: 500 });
+      }
     }
     console.log(`Mime supported. Creating transform pipeline`);
     const { transformer, mime } = createPipe(
@@ -31,25 +42,30 @@ export const handle = (
       getTransformer()
     );
     console.log(`Pipe line created`);
-    try {
-      const image = await inputStream.pipe(transformer).toBuffer();
-      console.log(`Image transformed to buffer`);
-      const response = {
-        statusCode: 200,
-        headers: {
-          'Content-Type': mime,
-          'Cache-Control': 'public, max-age=31536000'
-        },
-        body: image.toString('base64'),
-        isBase64Encoded: true
-      };
-      console.log(`Sending response`);
-      cb(null, response);
-      console.log(`Response sent`);
-    } catch (e) {
-      console.error(`Exception while transforming ${key}`);
-      console.error(e);
-      cb(null, { statusCode: 500 });
-    }
+    const inputStream = s3.getObject(params).createReadStream();
+    inputStream.once('readable', async () => {
+      try {
+        const image = await inputStream.pipe(transformer).toBuffer();
+        console.log(`Image transformed to buffer`);
+        const response = {
+          statusCode: 200,
+          headers: {
+            'Content-Type': mime,
+            'Cache-Control': 'public, max-age=31536000'
+          },
+          body: image.toString('base64'),
+          isBase64Encoded: true
+        };
+        console.log(`Sending response`);
+        cb(null, response);
+        console.log(`Response sent`);
+      } catch (e) {
+        console.error(`Exception while transforming ${key}`);
+        console.error(e);
+        cb(null, { statusCode: 500 });
+      }
+    })
   });
+
+
 };

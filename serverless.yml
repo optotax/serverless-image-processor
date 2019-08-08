@@ -10,8 +10,8 @@ plugins:
 provider:
   name: aws
   runtime: nodejs10.x
-  region: ${opt:region, 'ap-south-1'}
-  stage: ${opt:stage, 'dev'}
+  region: ${env:region, 'ap-south-1'}
+  stage: ${env:stage, 'dev'}
   endpointType: REGIONAL
   iamRoleStatements:
     - Effect: Allow

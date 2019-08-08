@@ -4,15 +4,20 @@ import { getS3ClientConfig } from './Utils';
 export const streamS3Object = (
   key: string,
   bucket: string,
-  cb: (err: any | null, response?: any) => void
+  cb: (err: any | null, response?: any) => void,
+  setContentType: (contentType: string) => void,
 ) => {
   const s3Client = new AWS.S3(getS3ClientConfig());
-  const stream = s3Client
+  const obj = s3Client
     .getObject({
       Key: key,
       Bucket: bucket
     })
-    .createReadStream();
+
+  const stream = obj.on('httpHeaders', function (statusCode, headers) {
+    console.log("Content type from headers " + headers['content-type']);
+    setContentType(headers['content-type']);
+  }).createReadStream();
 
   stream.on('error', (e: Error) => {
     if (e.name === 'NoSuchKey') {
@@ -23,6 +28,5 @@ export const streamS3Object = (
     console.error(e);
     cb(null, { statusCode: 500 });
   });
-
   return stream;
 };
