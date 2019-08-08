@@ -1,4 +1,4 @@
-import { SharpInstance } from 'sharp';
+import { Sharp } from 'sharp';
 import { InputQueryParams } from '../../QueryParams';
 import { toInt } from '../../Utils';
 
@@ -8,7 +8,7 @@ const defaultWebPSettings = {
 
 export const webP = (
   queryParams: InputQueryParams,
-  transformer: SharpInstance
+  transformer: Sharp
 ) =>
   transformer.webp({
     quality: toInt(queryParams.quality, defaultWebPSettings.quality)

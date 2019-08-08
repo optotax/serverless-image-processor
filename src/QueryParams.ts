@@ -16,10 +16,10 @@ export interface QueryParams {
   withoutEnlargement?: boolean;
 
   /**
-   * Preserving aspect ratio, resize the image to the maximum width or height specified then embed on a background of the exact width and height specified.
-   * Default: false
+   * How the image should be resized to fit both provided dimensions, one of cover, contain, fill, inside or outside. 
+   * (optional, default 'cover')
    */
-  embed?: boolean;
+  fit?:string;
 
   /**
    * Sets the background for embed mode.
@@ -27,12 +27,6 @@ export interface QueryParams {
    */
   background?: string;
 
-  /**
-   * Preserving aspect ratio, resize the image to be as large as possible while ensuring its dimensions are less than or equal to the width and height specified.
-   * Both width and height must be provided via resize otherwise the behaviour will default to crop.
-   * Default: false
-   */
-  max?: boolean;
 
   /**
    * Converts the input image to jpg.

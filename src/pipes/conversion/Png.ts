@@ -1,4 +1,4 @@
-import { SharpInstance } from 'sharp';
+import { Sharp } from 'sharp';
 import { InputQueryParams } from '../../QueryParams';
 import { toBoolean } from '../../Utils';
 
@@ -8,7 +8,7 @@ const defaultPngSettings = {
 
 export const png = (
   queryParams: InputQueryParams,
-  transformer: SharpInstance
+  transformer: Sharp
 ) =>
   transformer.png({
     progressive: toBoolean(

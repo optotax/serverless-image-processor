@@ -1,11 +1,21 @@
 import { curry } from 'ramda';
-import { SharpInstance } from 'sharp';
+import { Sharp } from 'sharp';
 import { InputQueryParams } from '../../QueryParams';
+import { toBoolean } from '../../Utils';
 
 export const resize = curry(
-  (queryParams: InputQueryParams, transformer: SharpInstance) => {
+  (queryParams: InputQueryParams, transformer: Sharp) => {
     const { width, height } = calculate(queryParams);
-    return transformer.resize(width, height);
+    const withoutEnlargement = toBoolean(queryParams.withoutEnlargement, true);
+    const options: any = {};
+    options["withoutEnlargement"] = withoutEnlargement;
+    if (queryParams.background != null) {
+      options["background"] = queryParams.background
+    }
+    if (queryParams.fit) {
+      return options["fit"] = queryParams.fit;
+    }
+    return transformer.resize(width, height, options);
   }
 );
 

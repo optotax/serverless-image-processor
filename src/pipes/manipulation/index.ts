@@ -2,22 +2,14 @@ import { resize } from './Resize';
 import { blur } from './Blur';
 import { normalize } from './Normalize';
 import { InputQueryParams } from '../../QueryParams';
-import { SharpInstance } from 'sharp';
+import { Sharp } from 'sharp';
 import { pipe, curry } from 'ramda';
-import { embed } from './Embed';
-import { background } from './Background';
-import { max } from './Max';
-import { withoutEnlargement } from './WithoutEnlargement';
 
 export const manipulate = curry(
-  (queryParams: InputQueryParams, transformer: SharpInstance) =>
+  (queryParams: InputQueryParams, transformer: Sharp) =>
     pipe(
       resize(queryParams),
       blur(queryParams),
       normalize(queryParams),
-      embed(queryParams),
-      background(queryParams),
-      max(queryParams),
-      withoutEnlargement(queryParams)
     )(transformer)
 );

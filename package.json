@@ -50,7 +50,7 @@
     "copy-webpack-plugin": "^4.6.0",
     "coveralls": "^3.0.2",
     "env-cmd": "^8.0.2",
-    "jest": "^23.6.0",
+    "jest": "^24.8.0",
     "prettier": "^1.15.2",
     "prettier-tslint": "^0.4.0",
     "serverless": "^1.33.2",
@@ -67,9 +67,9 @@
   "dependencies": {
     "@types/mime": "^2.0.0",
     "@types/ramda": "^0.25.42",
-    "@types/sharp": "^0.17.9",
+    "@types/sharp": "^0.22.2",
     "mime": "^2.4.0",
     "ramda": "^0.26.0",
-    "sharp": "0.20.1"
+    "sharp": "^0.23.0"
   }
 }

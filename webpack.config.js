@@ -23,9 +23,6 @@ module.exports = {
       callback();
     }
   ],
-  plugins: [
-    new CopyWebpackPlugin([{ from: 'compiled/sharp', to: 'compiled/sharp' }])
-  ],
   mode: process.env.IS_OFFLINE ? 'development' : 'production',
   module: {
     rules: [{ test: /\.ts(x?)$/, loader: 'ts-loader' }]

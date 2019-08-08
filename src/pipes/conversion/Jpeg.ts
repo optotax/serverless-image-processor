@@ -1,4 +1,4 @@
-import { SharpInstance } from 'sharp';
+import { Sharp } from 'sharp';
 import { InputQueryParams } from '../../QueryParams';
 import { toInt, toBoolean } from '../../Utils';
 
@@ -9,7 +9,7 @@ const defaultJpgSettings = {
 
 export const jpeg = (
   queryParams: InputQueryParams,
-  transformer: SharpInstance
+  transformer: Sharp
 ) =>
   transformer.jpeg({
     quality: toInt(queryParams.quality, defaultJpgSettings.quality),

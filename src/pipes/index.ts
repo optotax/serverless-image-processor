@@ -1,4 +1,4 @@
-import { SharpInstance } from 'sharp';
+import { Sharp } from 'sharp';
 import { pipe } from 'ramda';
 import { InputQueryParams } from '../QueryParams';
 import { manipulate } from './manipulation';
@@ -9,7 +9,7 @@ export type SupportedInputMime = 'image/jpeg' | 'image/gif' | 'image/png';
 export type SupportedOutputMime = 'image/jpeg' | 'image/webp' | 'image/png';
 
 export type PipeOutput = {
-  transformer: SharpInstance;
+  transformer: Sharp;
   mime: SupportedOutputMime;
 };
 
@@ -22,7 +22,7 @@ export function isSupportedInputMime(
 export const createPipe = (
   queryParams: InputQueryParams,
   inputMime: SupportedInputMime,
-  inputTransformer: SharpInstance
+  inputTransformer: Sharp
 ): PipeOutput =>
   pipe(
     manipulate(queryParams),

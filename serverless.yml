@@ -1,5 +1,5 @@
 service:
-  name: serverless-image-processor
+  name: serverless-image-resizer
 
 plugins:
   - serverless-webpack
@@ -9,8 +9,8 @@ plugins:
 
 provider:
   name: aws
-  runtime: nodejs8.10
-  region: ${opt:region, 'us-east-1'}
+  runtime: nodejs10.x
+  region: ${opt:region, 'ap-south-1'}
   stage: ${opt:stage, 'dev'}
   endpointType: REGIONAL
   iamRoleStatements:
@@ -26,7 +26,7 @@ provider:
         Fn::Join: [ "", [ "arn:aws:s3:::", Ref: SourceBucket, "/*" ] ]
 
 custom:
-  bucketName: ${self:service.name}-bucket-${self:provider.stage}
+  bucketName: trunkroad-assets-${self:provider.stage}
   s3:
     host: 0.0.0.0
     port: 5445
@@ -36,7 +36,7 @@ custom:
     includeModules:
       forceInclude:
         - sharp
-    packager: 'yarn'
+    packager: 'npm'
   apigwBinary:
     types:
       - '*/*'
