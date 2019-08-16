@@ -51,7 +51,9 @@ export const handle = (
           statusCode: 200,
           headers: {
             'Content-Type': mime,
-            'Cache-Control': 'public, max-age=31536000'
+            'Cache-Control': 'public, max-age=31536000',
+            'Access-Control-Allow-Origin': '*', // Required for CORS support to work
+            'Access-Control-Allow-Credentials': true, // Required for cookies, authorization headers with HTTPS
           },
           body: image.toString('base64'),
           isBase64Encoded: true

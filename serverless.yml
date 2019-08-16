@@ -52,6 +52,7 @@ functions:
       - http:
           method: get
           path: /{proxy+}
+          cors: true
 
 resources:
   Resources:
