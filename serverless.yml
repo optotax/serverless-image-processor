@@ -18,15 +18,15 @@ provider:
       Action:
         - s3:ListBucket
       Resource:
-        Fn::Join: [ "", [ "arn:aws:s3:::", Ref: SourceBucket ] ]
+        - 'arn:aws:s3:::${self:custom.bucketName}'
     - Effect: Allow
       Action:
         - s3:getObject
       Resource:
-        Fn::Join: [ "", [ "arn:aws:s3:::", Ref: SourceBucket, "/*" ] ]
+        - 'arn:aws:s3:::${self:custom.bucketName}/*'
 
 custom:
-  bucketName: trunkroad-assets-${self:provider.stage}
+  bucketName: rb-assets-${self:provider.stage}
   s3:
     host: 0.0.0.0
     port: 5445
@@ -56,10 +56,6 @@ functions:
 
 resources:
   Resources:
-    SourceBucket:
-      Type: AWS::S3::Bucket
-      Properties:
-        BucketName: ${self:custom.bucketName}
     WebDistribution:
       Type: AWS::CloudFront::Distribution
       Properties:
@@ -93,7 +89,3 @@ resources:
       Description: "Cloudfront url"
       Value:
         Fn::GetAtt: WebDistribution.DomainName
-    SourceBucketName:
-      Description: "Image bucket"
-      Value:
-        Ref: SourceBucket
